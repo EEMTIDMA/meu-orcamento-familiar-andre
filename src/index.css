@@ -2,14 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
-  height: 100%;
+body {
   margin: 0;
-  padding: 0;
   background-color: #f9fafb;
-}
-
-/* Garante que o container do gráfico tenha espaço para aparecer */
-.recharts-responsive-container {
-  min-height: 250px;
 }
