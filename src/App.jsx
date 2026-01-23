@@ -220,7 +220,23 @@ export default function App() {
 
   const LancamentosDespesas = () => {
     const [f, sf] = useState({ categoria: 'Moradia', descricao: '', valor: '', responsavel: 'André', data: new Date().toISOString().slice(0, 10) });
-    const add = () => { if(f.descricao && f.valor) { setDespesasReais([...despesasReais, {...f, valor: parseFloat(f.valor), id: Date.now()}]); sf({...f, descricao: '', valor: ''}); } };
+    
+    const add = () => { 
+      if(f.descricao && f.valor) { 
+        setDespesasReais([...despesasReais, {...f, valor: parseFloat(f.valor), id: Date.now()}]); 
+        sf({...f, descricao: '', valor: '', categoria: 'Moradia', data: new Date().toISOString().slice(0, 10)}); 
+      } 
+    };
+
+    // Função para apagar o lançamento
+    const remover = (id) => {
+      if(window.confirm('Deseja excluir este lançamento?')) {
+        setDespesasReais(despesasReais.filter(d => d.id !== id));
+      }
+    };
+
+    const lista = despesasReais.filter(d => d.data.startsWith(mesAtual));
+
     return (
       <div className="space-y-4">
         <div className="bg-white p-6 rounded-lg border-2 border-gray-200 shadow-sm">
@@ -230,11 +246,33 @@ export default function App() {
             <input className="border-2 p-2 rounded-lg" placeholder="Descrição" value={f.descricao} onChange={e=>sf({...f, descricao:e.target.value})} />
             <input className="border-2 p-2 rounded-lg" type="number" placeholder="Valor" value={f.valor} onChange={e=>sf({...f, valor:e.target.value})} />
             <input className="border-2 p-2 rounded-lg" type="date" value={f.data} onChange={e=>sf({...f, data:e.target.value})} />
-            <button onClick={add} className="bg-red-700 text-white font-bold rounded-lg md:col-span-2">Lançar Agora</button>
+            <button onClick={add} className="bg-red-700 text-white font-bold rounded-lg md:col-span-2 shadow-md hover:bg-red-800 transition-colors">Lançar Agora</button>
           </div>
         </div>
+        
         <div className="bg-white p-4 rounded-lg border-2 border-gray-200 divide-y">
-          {despesasReais.filter(d=>d.data.startsWith(mesAtual)).map(d=>(<div key={d.id} className="p-3 flex justify-between"><span>{d.descricao} <small className="text-gray-400">({d.categoria})</small></span><span className="font-bold text-red-600">R$ {d.valor.toFixed(2)}</span></div>))}
+          {lista.length === 0 ? (
+            <p className="text-center text-gray-400 py-4">Nenhum lançamento neste mês.</p>
+          ) : (
+            lista.map(d => (
+              <div key={d.id} className="p-3 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <div className="flex flex-col">
+                  <span className="font-medium text-gray-800">{d.descricao}</span>
+                  <small className="text-gray-400">{d.categoria} • {new Date(d.data + 'T00:00:00').toLocaleDateString('pt-BR')}</small>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="font-bold text-red-600">R$ {d.valor.toFixed(2)}</span>
+                  <button 
+                    onClick={() => remover(d.id)} 
+                    className="text-red-400 hover:text-red-700 p-1 rounded-full hover:bg-red-50"
+                    title="Excluir lançamento"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     );
