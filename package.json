@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "clsx": "latest",
-    "lucide-react": "latest",
+    "firebase": "^12.11.0",
+    "lucide-react": "^1.7.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "recharts": "latest",
+    "recharts": "^3.8.1",
     "tailwind-merge": "latest"
   },
   "devDependencies": {
